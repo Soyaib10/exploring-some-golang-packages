@@ -1,0 +1,26 @@
+- 
+copier.Copy(&payroll, &employee)
+    it makes deep copy from employee to payroll. changing employee values will not change payroll value.
+
+- 
+type A struct {
+		secret int // unexported values 
+	}
+    if a value is unexported then copier can read it but not write it. so in the copied struct secret value will be 0.
+
+- 
+tags should be used in targeted struct. like you want a field must be present in 
+    your code then write ID int `copier:"must"` like this in target field.
+
+- 
+When types don't match, `copier` does NOT attempt automatic conversion, with a    few basic exceptions
+
+| Source Type | Destination Type | Works? |
+|-------------|----------------|--------|
+| `int` | `string` | No |
+| `string` | `int` | No |
+| `int` | `int64` | Yes (numeric conversion) |
+| `float64` | `int` | Yes |
+| `bool` | `bool` | Yes |
+| `string` | `[]byte` | Yes |
+| `time.Time` | `string` | No (not by default — needs custom converter) |
