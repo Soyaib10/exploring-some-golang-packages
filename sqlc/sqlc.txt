@@ -1,0 +1,18 @@
+-
+sqlc flow: schema.sql + query.sql → sqlc → Go code
+
+- 
+row return?
+sqlc এর তিনটা option আছে:
+:one → একটা row আসবে
+:many → অনেক row আসবে
+:exec → কোনো row আসবে না (INSERT, UPDATE, DELETE)
+
+-- email unique, তাই একজনই আসবে
+SELECT * FROM users WHERE email = $1;  → :one
+
+-- সব user আনো
+SELECT * FROM users;  → :many
+
+-- user বানাও, কিছু return না
+INSERT INTO users (username, email) VALUES ($1, $2);  → :exec
