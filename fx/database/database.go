@@ -10,7 +10,12 @@ type Database struct {
 	Host string
 }
 
-func NewDatabase(cfg *config.Config) *Database {
-	fmt.Println("Database connect হচ্ছে:", cfg.DBHost)
-	return &Database{Host: cfg.DBHost}
+func NewPrimaryDB(cfg *config.Config) *Database {
+    fmt.Println("Primary DB connecting:", cfg.DBHost)
+    return &Database{Host: cfg.DBHost}
+}
+
+func NewReplicaDB(cfg *config.Config) *Database {
+    fmt.Println("Replica DB connecting:", cfg.DBHost)
+    return &Database{Host: "replica-" + cfg.DBHost}
 }

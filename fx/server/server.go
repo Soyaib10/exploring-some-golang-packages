@@ -10,26 +10,31 @@ import (
 )
 
 type Server struct {
-	db   *database.Database
-	port string
+    primary *database.Database
+    replica *database.Database
+    port    string
 }
 
-func NewServer(lc fx.Lifecycle, db *database.Database, cfg *config.Config) *Server {
-	s := &Server{db: db, port: cfg.Port}
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			fmt.Println("server starting on port: ", s.port)
-			return nil
-		},
-		OnStop: func(ctx context.Context) error {
-			fmt.Println("server shutting down gracefully")
-			return nil
-		},
-	})
+func NewServer(
+    lc fx.Lifecycle,
+    cfg *config.Config,
+    primary *database.Database,
+    replica *database.Database,
+) *Server {
+    s := &Server{primary: primary, replica: replica, port: cfg.Port}
 
-	return s
-}
+    lc.Append(fx.Hook{
+        OnStart: func(ctx context.Context) error {
+            fmt.Println("Server starting on port:", s.port)
+            fmt.Println("Primary DB:", s.primary.Host)
+            fmt.Println("Replica DB:", s.replica.Host)
+            return nil
+        },
+        OnStop: func(ctx context.Context) error {
+            fmt.Println("Server shutting down gracefully")
+            return nil
+        },
+    })
 
-func (s *Server) Start() {
-	fmt.Println("Server চালু হলো port:", s.port)
+    return s
 }

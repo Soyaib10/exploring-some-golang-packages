@@ -19,9 +19,16 @@ import (
 // fx way
 func main() {
 	fx.New(
+		// fx.Provide(
+		// 	fx.Annotate(
+		// 		database.NewPrimaryDB,
+		// 		fx.ResultTags(`name:"primary"`),
+		// 	),
+		// ),
 		fx.Provide(config.NewConfig),
-		fx.Provide(database.NewDatabase),
-		fx.Provide(server.NewServer),
+		fx.Provide(fx.Annotate(database.NewPrimaryDB, fx.ResultTags(`name:"primary"`))),
+		fx.Provide(fx.Annotate(database.NewReplicaDB, fx.ResultTags(`name:"replica"`))),
+		fx.Provide(fx.Annotate(server.NewServer, fx.ParamTags(``, ``, `name:"primary"`, `name:"replica"`))),
 		fx.Invoke(func(s *server.Server) {
 		}),
 	).Run()
