@@ -23,7 +23,6 @@ func main() {
 		fx.Provide(database.NewDatabase),
 		fx.Provide(server.NewServer),
 		fx.Invoke(func(s *server.Server) {
-			s.Start()
 		}),
 	).Run()
 }
