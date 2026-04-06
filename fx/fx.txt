@@ -20,6 +20,7 @@ fx.Lifecycle: এটা দিয়ে আপনি অ্যাপ্লিকে
     OnStart — app উঠলে কী করবে
     OnStop — app নামলে কী করবে
 
+-
 fx.annotate: কখন দরকার? যখন একই type এর একাধিক instance থাকে। যেমন দুইটা *Database।
 example: 
 func NewPrimaryDB(cfg *config.Config) *Database {
@@ -45,3 +46,6 @@ my server func was like
 func NewServer(lc fx.Lifecycle, cfg *config.Config, primary *Database, replica *Database)
 //             ""               ""                  name:"primary"   name:"replica"
 
+-
+fx.As — interface হিসেবে present করা
+Value Groups — slice হিসেবে collect করা

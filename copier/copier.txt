@@ -10,7 +10,7 @@ type A struct {
 
 - 
 tags should be used in targeted struct. like you want a field must be present in 
-    your code then write ID int `copier:"must"` like this in target field.
+your code then write ID int `copier:"must"` like this in target field.
 
 - 
 When types don't match, `copier` does NOT attempt automatic conversion, with a    few basic exceptions

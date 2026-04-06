@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Soyaib10/exploring-some-golang-packages/fx/config"
 	"github.com/Soyaib10/exploring-some-golang-packages/fx/database"
+	"github.com/Soyaib10/exploring-some-golang-packages/fx/handler"
 	"github.com/Soyaib10/exploring-some-golang-packages/fx/server"
 	"go.uber.org/fx"
 	// "go.uber.org/fx"
@@ -28,6 +29,7 @@ func main() {
 		fx.Provide(config.NewConfig),
 		fx.Provide(fx.Annotate(database.NewPrimaryDB, fx.ResultTags(`name:"primary"`))),
 		fx.Provide(fx.Annotate(database.NewReplicaDB, fx.ResultTags(`name:"replica"`))),
+		fx.Provide(handler.NewHandler),
 		fx.Provide(fx.Annotate(server.NewServer, fx.ParamTags(``, ``, `name:"primary"`, `name:"replica"`))),
 		fx.Invoke(func(s *server.Server) {
 		}),
