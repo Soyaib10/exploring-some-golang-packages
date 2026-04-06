@@ -1,0 +1,19 @@
+- manual vs fx
+PROBLEM: manual DI
+db := NewDB()
+repo := NewRepo(db)
+service := NewService(repo)
+
+WITH FX: just provide those dependencey in any order
+fx.New(
+    fx.Provide(NewDB),
+    fx.Provide(NewRepo),
+    fx.Provide(NewService),
+)
+
+- 
+strarting point
+fx মূলত তিনটি প্রধান কনসেপ্টের ওপর দাঁড়িয়ে আছে:
+fx.Provide: এখানে তুমি constructor function দাও। এটা দিয়ে আপনি fx-কে বলেন যে কোন অবজেক্ট কীভাবে তৈরি করতে হয় (Constructor functions)।
+fx.Invoke: এখানে তুমি সেই function দাও যেটা app start হওয়ার সময় অবশ্যই run করতে হবে। এটা দিয়ে আপনি fx-কে বলেন কোন ফাংশনটি রান করতে হবে (যেকোনো অ্যাকশন শুরু করা)।
+fx.Lifecycle: এটা দিয়ে আপনি অ্যাপ্লিকেশনের Start এবং Stop কন্ট্রোল করেন।
