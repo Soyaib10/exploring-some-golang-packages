@@ -1,0 +1,24 @@
+-
+Real scenario: A food delivery app (like Pathao Food or Foodpanda).
+
+     - 10 orders come in from customers
+     - Only 3 delivery riders are on duty
+     - Orders go into a queue
+     - Riders grab orders one by one
+     - Each rider picks up food from restaurant, delivers to customer
+
+ ---
+
+     1 type Order struct {
+     2     ID          int
+     3     Restaurant  string
+     4     Customer    string
+     5     Address     string
+     6 }
+    This defines what one order looks like. It has 4 pieces of information:
+     - Which order number it is (ID)
+     - Which restaurant to pick up from (Restaurant)
+     - Who ordered it (Customer)
+     - Where to deliver (Address)
+
+    Think of it like a delivery slip a rider holds.

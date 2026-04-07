@@ -1,0 +1,82 @@
+-
+WaitGroup — the right way to wait
+
+Think of it like a counter:
+- Add(n) — "I'm launching n goroutines"
+- Done() — "one goroutine finished" (decrements counter by 1)
+- Wait() — "block here until counter hits 0"
+
+1. wg.Add(1) → counter = 1
+2. goroutine starts
+3. wg.Wait() → main blocks because counter = 1
+4. goroutine prints, hits defer wg.Done() → counter = 0
+5. wg.Wait() unblocks → main continues
+
+-
+The M:N Model
+
+Go uses M:N threading — M goroutines mapped onto N OS threads.
+
+Three key players:
+
+- **G** — Goroutine (your go func())
+- **M** — Machine (an OS thread, actually does the work)
+- **P** — Processor (a logical CPU, holds a queue of goroutines)
+
+Think of it like this:
+
+P1 [G1, G2, G3] → M1 (OS thread running on CPU core)
+P2 [G4, G5]     → M2 (OS thread running on CPU core)
+
+
+Each P has a local run queue of goroutines. M picks goroutines from P and runs them.
+
+How many P's do you get?
+By default, one P per CPU core. Controlled by:
+runtime.GOMAXPROCS(n) // set number of P's
+So on a 4-core machine, 4 goroutines can truly run in parallel.
+
+- 
+worker pool
+
+🏭 Real-World Analogy: Restaurant Kitchen
+
+    Imagine a busy restaurant:
+
+    Without Worker Pool (What we just saw):
+     - 10,000 customers come at once
+     - The restaurant hires 10,000 cooks
+     - Kitchen explodes. Chaos.
+
+    With Worker Pool:
+     - 10,000 customers come at once
+     - The restaurant keeps 5 cooks (workers)
+     - All orders go into a queue (order board)
+     - Each cook picks up one order, finishes it, then picks the next
+     - Controlled. Organized. Sustainable.
+
+    ---
+
+    📐 In Programming Terms:
+
+      1                     ┌─────────────┐
+      2    Tasks ──────────►│   Channel   │
+      3    (10,000)         │   (Queue)   │
+      4                     └──────┬──────┘
+      5                            │
+      6           ┌────────────────┼────────────────┐
+      7           │                │                │
+      8      ┌────▼────┐     ┌────▼────┐     ┌────▼────┐
+      9      │ Worker 1│     │ Worker 2│     │ Worker 3│
+     10      │(Goroutine)   │(Goroutine)   │(Goroutine)│
+     11      └─────────┘     └─────────┘     └─────────┘
+
+    How it works:
+
+     1. Channel (Queue) - Holds all pending tasks
+     2. Fixed Workers - Say, 5 goroutines running forever in a loop
+     3. Each worker:
+        - Reads from the channel
+        - Processes the task
+        - Reads the next task
+        - Repeats until channel closes
