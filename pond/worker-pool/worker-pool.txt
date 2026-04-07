@@ -22,3 +22,36 @@ Real scenario: A food delivery app (like Pathao Food or Foodpanda).
      - Where to deliver (Address)
 
     Think of it like a delivery slip a rider holds.
+
+# pond starts
+- 
+To be precise, there are two types of pools, and both have Submit and SubmitErr:
+
+    1. Regular Pool (pond.NewPool)
+
+
+    ┌──────────────────────────────┬────────────────────┬────────────────────────┐
+    │ Method                       │ Function Signature │ What .Wait() gives you │
+    ├──────────────────────────────┼────────────────────┼────────────────────────┤
+    │ pool.Submit(func())          │ Fire and forget    │ Nothing                │
+    │ pool.SubmitErr(func() error) │ Can fail           │ Just error             │
+    └──────────────────────────────┴────────────────────┴────────────────────────┘
+
+
+    2. Result Pool (pond.NewResultPool[T])
+
+
+    ┌───────────────────────────────────┬────────────────────────────┬────────────────────────┐
+    │ Method                            │ Function Signature         │ What .Wait() gives you │
+    ├───────────────────────────────────┼────────────────────────────┼────────────────────────┤
+    │ pool.Submit(func() T)             │ Returns value              │ (result, error)        │
+    │ pool.SubmitErr(func() (T, error)) │ Returns value AND can fail │ (result, error)        │
+    └───────────────────────────────────┴────────────────────────────┴────────────────────────┘
+
+
+    ---
+
+    In short:
+     - Regular pool → use SubmitErr if you only care about success/failure.
+     - Result pool → use Submit (or SubmitErr) if you need a return value (like a calculated fee, a database ID, etc.).
+
